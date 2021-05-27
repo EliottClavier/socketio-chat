@@ -1,48 +1,95 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Socket.IO chat</title>
-    <style>
-        body { margin: 0; padding-bottom: 3rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    <head>
+        <title>Socket.IO chat</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="stylesheets/style.css" />
+    </head>
+    <body>
+        <section id="connection" class="container-fluid d-flex h-100 m-0 p-0">
+            <div class="row align-items-center justify-content-center w-100">
+                <form id="user_form" class="col-6 form-group">
+                    <label for="user">Nom d'utilisateur</label>
+                    <input class="form-control my-3" id="user" autocomplete="off" type="text" />
+                    <div class="text-center">
+                        <button class="btn btn-primary"> Se connecter </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+        <section id="connected">
+            <div class="disconnect_row disconnect-button">
+                <form id="disconnect_form">
+                    <button type="submit" class="btn btn-danger"> Se déconnecter </button>
+                </form>
+            </div>
+            <div>
+                <ul id="messages"></ul>
+                <form id="form">
+                    <input id="input" autocomplete="off" /><button>Send</button>
+                </form>
+            </div>
+        </section>
+    </body>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      let socket = io();
+      let connection = document.getElementById('connection');
+      let connected = document.getElementById('connected');
+      let user = document.getElementById('user');
+      let user_form = document.getElementById('user_form');
+      let disconnect_form = document.getElementById('disconnect_form');
+      connected.hidden = true;
 
-        #form { background: rgba(0, 0, 0, 0.15); padding: 0.25rem; position: fixed; bottom: 0; left: 0; right: 0; display: flex; height: 3rem; box-sizing: border-box; backdrop-filter: blur(10px); }
-        #input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; }
-        #input:focus { outline: none; }
-        #form > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #fff; }
+      let messages = document.getElementById('messages');
+      let form = document.getElementById('form');
+      let input = document.getElementById('input');
 
-        #messages { list-style-type: none; margin: 0; padding: 0; }
-        #messages > li { padding: 0.5rem 1rem; }
-        #messages > li:nth-child(odd) { background: #efefef; }
-    </style>
-</head>
-<body>
-<ul id="messages"></ul>
-<form id="form" action="">
-    <input id="input" autocomplete="off" /><button>Send</button>
-</form>
-</body>
-<script src="/socket.io/socket.io.js"></script>
-<script>
-  var socket = io();
+      const buildMessage = (name, string) => {
+        let span = document.createElement('span');
+        span.className = name;
+        span.textContent = string;
+        return span;
+      }
 
-  var messages = document.getElementById('messages');
-  var form = document.getElementById('form');
-  var input = document.getElementById('input');
+      const switchView = () => {
+        connection.classList.toggle("d-flex");
+        connection.hidden = !connection.hidden;
+        connected.hidden = !connected.hidden;
+      }
 
-  form.addEventListener('submit', function(e) {
-    e.preventDefault();
-    if (input.value) {
-      socket.emit('message', input.value);
-      input.value = '';
-    }
-  });
+      user_form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (user.value) {
+          socket.emit('new_user', user.value);
+          switchView();
+        }
+      });
 
-  socket.on('message', function(msg) {
-    var item = document.createElement('li');
-    item.textContent = msg;
-    messages.appendChild(item);
-    window.scrollTo(0, document.body.scrollHeight);
-  });
+      disconnect_form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        socket.emit('user_disconnect', user.value);
+        user.value = '';
+        switchView();
+      });
 
-</script>
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (input.value) {
+          socket.emit('message', input.value);
+          input.value = '';
+        }
+      });
+
+      socket.on('message', function(obj) {
+        var item = document.createElement('li');
+        let user = buildMessage('user', obj.user + ' - ');
+        let msg = buildMessage('msg', obj.message);
+        item.appendChild(user);
+        item.appendChild(msg);
+        messages.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
+      });
+
+    </script>
 </html>
