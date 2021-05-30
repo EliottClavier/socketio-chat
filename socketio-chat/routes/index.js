@@ -16,12 +16,19 @@ app.get('/', function(req, res, next) {
 let users = [];
 
 io.on('connection', (socket) => {
+
   socket.on('new_user', (user) => {
     users.push(user);
+    io.emit('users', { users: users });
+    io.emit('connected', { user: user });
 
     socket.on('user_disconnect', (user) => {
-      const index = users.find(u => u === user);
-      users.splice(index, 1);
+      users.splice(users.indexOf(user), 1);
+      io.emit('users', { users: users });
+      io.emit('disconnected', { user: user });
+      socket.off('new_user', () => {
+        console.log("Déconnexion : ", user)
+      });
     });
 
     socket.on('message', (msg) => {

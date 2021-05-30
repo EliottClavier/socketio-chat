@@ -7,6 +7,7 @@ body {
   padding: 0;
   height: 100%;
   background-color: #18181b;
+  color: snow;
 }
 
 .user {
@@ -25,6 +26,13 @@ body {
 .col-chat {
   border-left: 1px solid #1f1f23;
   background-color: #1f1f23;
+  padding-top: 5em;
+}
+
+.disconnect-button {
+  position: absolute;
+  top: 1em;
+  right: 1em;
 }
 
 #form {
@@ -32,18 +40,20 @@ body {
   bottom: 0.5em;
 }
 
-#messages {
+#messages, #users {
   list-style-type: none;
-  margin-left: 0.7em;
   padding: 0;
 }
+
 #messages > li {
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0;
 }
 
-.disconnect-button {
-  top: 1em;
-  right: 0;
-  position: absolute;
-  z-index: 1;
+#users {
+  font-size: large;
+  font-weight: bold;
+}
+
+#users > li {
+  padding: 0.25rem 0;
 }

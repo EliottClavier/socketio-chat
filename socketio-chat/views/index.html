@@ -6,8 +6,8 @@
         <link rel="stylesheet" type="text/css" href="stylesheets/style.css" />
     </head>
     <body>
-        <section id="connection" class="container-fluid d-flex h-100 m-0 p-0">
-            <div class="row align-items-center justify-content-center w-100">
+        <section id="connection" class="container-fluid d-flex h-100">
+            <div class="row align-items-center justify-content-center" style="flex: 1">
                 <form id="user_form" class="col-6 form-group">
                     <label for="user" style="color: snow">Nom d'utilisateur</label>
                     <input class="form-control my-3" id="user" autocomplete="off" type="text" />
@@ -17,19 +17,24 @@
                 </form>
             </div>
         </section>
-        <section id="connected" class="container-fluid h-100 w-100 m-0 p-0">
-            <div class="row h-100 w-100">
-                <div class="col-9 m-0 p-0 col-messages">
+        <section id="connected" class="container-fluid h-100">
+            <div class="row" style="flex: 1">
+                <div class="col-9 col-messages">
                     <ul id="messages"></ul>
                 </div>
-                <div class="col-3 m-0 p-0 pl-4 col-chat">
-                    <div class="disconnect_row disconnect-button">
-                        <form id="disconnect_form">
-                            <button type="submit" class="btn btn-danger"> Se déconnecter </button>
-                        </form>
+                <div class="col-3 col-chat">
+                    <div class="row justify-content-center">
+                        <div class="disconnect_row disconnect-button">
+                            <form id="disconnect_form">
+                                <button type="submit" class="btn btn-danger"> Se déconnecter </button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="row justify-content-left pl-3">
+                        <ul id="users"></ul>
                     </div>
                     <div class="row justify-content-center">
-                        <form id="form" class="input-group text-center">
+                        <form id="form" class="input-group px-3">
                             <input id="input" type="text" style="border: 0;" class="form-control" placeholder="Message ...">
                             <div class="input-group-append">
                                 <button class="btn btn-primary" type="submit">Envoyer</button>
